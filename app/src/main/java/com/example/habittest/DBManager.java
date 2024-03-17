@@ -3,7 +3,15 @@ package com.example.habittest;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.JsonWriter;
+import android.util.Log;
+import android.widget.Toast;
 
+import org.json.JSONStringer;
+
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class DBManager {
@@ -47,24 +55,14 @@ public class DBManager {
     }
 
     public void insertTestRecord() {
-        String sql1 = "insert into habits values ('测试习惯1','habit_1',2,0,'晨间习惯','每天','只有千锤百炼，才能成为好钢。',5,0,3,'20190526',1)";
-        String sql2 = "insert into habits values ('测试习惯2','habit_2',3,0,'午间习惯','每天','只有千锤百炼，才能成为好钢。',3,0,2,'20190515',1)";
-        String sql3 = "insert into habits values ('测试习惯3','habit_3',1,0,'晚间习惯','每天','只有千锤百炼，才能成为好钢。',4,0,2,'20190522',1)";
-        String sql4 = "insert into habits values ('测试习惯4','habit_4',1,0,'任意时间','每天','只有千锤百炼，才能成为好钢。',6,0,3,'20190531',1)";
-
-        String sql5 = "insert into daka values ('测试习惯1','20190601'),('测试习惯1','20190602'),('测试习惯1','20190603'),('测试习惯1','20190610'),('测试习惯1','20190611')";
-        String sql6 = "insert into daka values ('测试习惯2','20190603'),('测试习惯2','20190610'),('测试习惯2','20190611')";
-        String sql7 = "insert into daka values ('测试习惯3','20190603'),('测试习惯3','20190604'),('测试习惯3','20190610'),('测试习惯3','20190611')";
-        String sql8 = "insert into daka values ('测试习惯4','20190601'),('测试习惯4','20190602'),('测试习惯4','20190603'),('测试习惯4','20190609'),('测试习惯4','20190610'),('测试习惯4','20190611')";
-
+        String sql1 = "insert into habits values ('敷面膜','habit_1',1,0,'任意时间','每天','只有千锤百炼，才能成为好钢。',2,0,0,'20240326',1)";
+        String sql2 = "insert into habits values ('骑车','habit_2',1,0,'任意时间','每天','只有千锤百炼，才能成为好钢。',1,0,0,'20240326',1)";
+        String sql5 = "insert into daka values ('敷面膜','20240311'),('敷面膜','20240317')";
+        String sql6 = "insert into daka values ('骑车','20240314')";
         db.execSQL(sql1);
         db.execSQL(sql2);
-        db.execSQL(sql3);
-        db.execSQL(sql4);
         db.execSQL(sql5);
         db.execSQL(sql6);
-        db.execSQL(sql7);
-        db.execSQL(sql8);
     }
 
     public void clockinUpdateDB(String h) {
@@ -100,8 +98,15 @@ public class DBManager {
             Cursor c = db.rawQuery(sq2, null);
             c.moveToFirst();
             int i = 0;
+
+            Date date = new Date();     ///获取当前日期
+            String date_s = Utils.date2String(date);
             while (!c.isAfterLast()) {
-                Habit h1 = new Habit(c.getString(0), c.getString(1), c.getInt(2), c.getInt(3), c.getString(4), c.getString(5), c.getString(6), c.getInt(7), c.getInt(8), c.getInt(9), c.getString(10), c.getInt(11));
+                String todayDakaSql ="select count(*) from daka where hname='" + c.getString(0) + "' and dakadate = '" + date_s +"'";
+                Cursor dakaCursor = db.rawQuery(todayDakaSql, null);
+                dakaCursor.moveToFirst();
+                int todayDakaTimes = dakaCursor.getInt(0);
+                Habit h1 = new Habit(c.getString(0), c.getString(1), c.getInt(2), todayDakaTimes, c.getString(4), c.getString(5), c.getString(6), c.getInt(7), c.getInt(8), c.getInt(9), c.getString(10), c.getInt(11));
                 h[i++] = h1;
                 c.moveToNext();
             }

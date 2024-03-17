@@ -13,7 +13,7 @@ public class MySqliteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i("tag", "+++++++++++onCreate++++++++++");
+//        Log.i("tag", "+++++++++++onCreate++++++++++");
     }
 
     @Override

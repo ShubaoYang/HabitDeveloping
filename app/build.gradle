@@ -6,7 +6,7 @@ android {
     aaptOptions.useNewCruncher = false
     defaultConfig {
         applicationId "com.example.habittest"
-        minSdkVersion 26
+        minSdkVersion 25
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
